@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель сервера - TravHouse (Подключенная)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Подключаем те же стили что и в оригинальной админ-панели */
+        .admin-header-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(30, 30, 63, 0.95), rgba(42, 42, 84, 0.95));
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .admin-logo-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .admin-logo-subtitle {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-left: -10px;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .admin-nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .admin-nav-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: rgba(255, 68, 68, 0.5);
+            box-shadow: 0 8px 25px rgba(255, 68, 68, 0.2);
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .connection-status.connected {
+            border-color: rgba(0, 255, 0, 0.5);
+            color: #00ff00;
+        }
+
+        .connection-status.disconnected {
+            border-color: rgba(255, 0, 0, 0.5);
+            color: #ff4444;
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        @keyframes logoGlow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8)); }
+            to { filter: drop-shadow(0 0 30px rgba(0, 255, 255, 1)); }
+        }
+
+        .admin-dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 100px 20px 50px;
+            display: grid;
+            gap: 30px;
+        }
+        
+        .admin-header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(145deg, rgba(58, 58, 80, 0.9), rgba(42, 42, 74, 0.8));
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .console-section {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+        
+        .admin-card {
+            background: linear-gradient(145deg, rgba(58, 58, 80, 0.9), rgba(42, 42, 74, 0.8));
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            padding: 10px;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        
+        .card-title {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .card-content {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+        
+        .server-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            color: #00ffff;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #00ffff, #0088ff);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online { background: #00ff00; }
+        .status-offline { background: #ff4444; }
+        .status-maintenance { background: #ffd700; }
+        
+        .player-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .player-item:last-child {
+            border-bottom: none;
+        }
+        
+        .console-card {
+            background: linear-gradient(145deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 30, 0.9));
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .console-output-large {
+            background: #000000;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            height: 400px;
+            overflow-y: auto;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+            line-height: 1.4;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .console-input-section {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        .command-input-large {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .command-input-large:focus {
+            outline: none;
+            border-color: rgba(0, 255, 0, 0.6);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .console-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .console-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .execute-btn {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            color: white;
+        }
+
+        .execute-btn:hover {
+            background: linear-gradient(45deg, #00cc00, #00aa00);
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .clear-btn {
+            background: linear-gradient(45deg, #ff8800, #ff6600);
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: linear-gradient(45deg, #ff6600, #ff4400);
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 136, 0, 0.3);
+        }
+        
+        .command-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 5px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .error-message {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        /* ===== СТИЛИ АВТОРИЗАЦИИ ===== */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            z-index: 10001;
+        }
+
+        .login-box {
+            background: linear-gradient(135deg, rgba(30, 30, 63, 0.95), rgba(42, 42, 84, 0.95));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            min-width: 400px;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            animation: loginSlideIn 0.5s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #00ffff;
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        }
+
+        .login-header p {
+            color: #99ffcc;
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .login-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .login-footer {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @keyframes loginSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Экран авторизации -->
+    <div id="loginScreen" class="login-screen">
+        <div class="minecraft-bg"></div>
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1>🛡️ TravHouse Admin</h1>
+                    <p>Вход в админ-панель</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="adminPassword">🔑 Пароль:</label>
+                        <input type="password" id="adminPassword" required placeholder="Введите пароль администратора">
+                    </div>
+                    <button type="submit" class="login-btn">
+                        <span>🚀 Войти</span>
+                    </button>
+                    <div id="loginError" class="login-error" style="display: none;">
+                        ❌ Неверный пароль!
+                    </div>
+                </form>
+                <div class="login-footer">
+                    <p>🔒 Доступ только для администраторов</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основная админ-панель (скрыта до входа) -->
+    <div id="adminPanel" style="display: none;">
+        <div class="minecraft-bg"></div>
+        
+        <header class="admin-header-top">
+        <div class="admin-logo">
+            <span class="admin-logo-icon">🛡️</span>
+            <span class="admin-logo-text">TravHouse</span>
+            <span class="admin-logo-subtitle">Admin Panel (Connected)</span>
+        </div>
+        <div class="admin-nav">
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-indicator"></span>
+                <span id="statusText">Подключение...</span>
+            </div>
+            <button class="admin-nav-btn" onclick="refreshAllData()">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">Обновить всё</span>
+            </button>
+            <button class="admin-nav-btn logout-btn" id="logoutBtn">
+                <span class="btn-icon">🚪</span>
+                <span class="btn-text">Выйти</span>
+            </button>
+        </div>
+    </header>
+
+    <main style="padding-top: 100px;">
+        <div class="admin-dashboard">
+            <!-- Заголовок админ-панели -->
+            <div class="admin-header">
+                <h1 style="color: #00ffff; margin-bottom: 10px;">🛡️ Панель Администратора TravHouse (Подключена к серверу)</h1>
+                <p style="color: #cccccc; margin: 0;" id="connectionInfo">Подключение к серверу...</p>
+                
+                <!-- Быстрая статистика -->
+                <div class="server-stats" id="serverStats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="serverStatus">
+                            <span class="status-indicator status-offline"></span>Проверка...
+                        </span>
+                        <div class="stat-label">Статус сервера</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="playersOnline">-/-</span>
+                        <div class="stat-label">Игроки</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="serverVersion">-</span>
+                        <div class="stat-label">Версия</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="tps">-</span>
+                        <div class="stat-label">TPS</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="uptime">-</span>
+                        <div class="stat-label">Аптайм</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Основные разделы -->
+            <div class="dashboard-grid">
+                <!-- Управление игроками -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <div class="card-icon">👥</div>
+                        <h3 class="card-title">Управление игроками</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="player-list" id="playersList">
+                            <div class="player-item">
+                                <span>📡 Загрузка списка игроков...</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn btn-success" onclick="broadcastMessage()">📢 Сообщение всем</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Управление сервером -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <div class="card-icon">🖥️</div>
+                        <h3 class="card-title">Управление сервером</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Основные операции с сервером:</p>
+                        <div class="action-buttons">
+                            <button class="action-btn btn-warning" onclick="restartServer()">🔄 Перезагрузка</button>
+                            <button class="action-btn btn-danger" onclick="stopServer()">🛑 Остановка</button>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="action-btn btn-primary" onclick="saveWorld()">💾 Сохранить мир</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Банлист -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <div class="card-icon">🚫</div>
+                        <h3 class="card-title">Банлист</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="player-list" id="banList">
+                            <div class="player-item">
+                                <span>📡 Загрузка банлиста...</span>
+                            </div>
+                        </div>
+                        <input type="text" class="command-input" placeholder="Никнейм для бана..." id="banInput">
+                        <div class="action-buttons">
+                            <button class="action-btn btn-danger" onclick="banPlayerByName()">🚫 Забанить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Мониторинг ресурсов -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                        <h3 class="card-title">Мониторинг ресурсов (Spark)</h3>
+                    </div>
+                    <div class="card-content" id="performanceCard">
+                        <div class="server-stats">
+                            <div class="stat-item">
+                                <span class="stat-value" id="tpsDetailed">-</span>
+                                <div class="stat-label">TPS (текущий)</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="mspt">-</span>
+                                <div class="stat-label">MSPT</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="memoryUsage">-</span>
+                                <div class="stat-label">Память</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Расширенная статистика TPS -->
+                        <div class="server-stats" style="margin-top: 15px;">
+                            <div class="stat-item">
+                                <span class="stat-value" id="tps1m">-</span>
+                                <div class="stat-label">TPS 1m</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="tps5m">-</span>
+                                <div class="stat-label">TPS 5m</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="tps15m">-</span>
+                                <div class="stat-label">TPS 15m</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="gcCollections">-</span>
+                                <div class="stat-label">GC Count</div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="action-btn btn-success" onclick="startSparkCpuProfile(60)" title="CPU профилирование на 60 секунд">🔍 CPU Profile</button>
+                            <button class="action-btn btn-warning" onclick="getSparkHeapSummary()" title="Анализ использования памяти">💾 Heap Анализ</button>
+                        </div>
+                        <div class="action-buttons" style="margin-top: 10px;">
+                            <button class="action-btn btn-danger" onclick="startSparkTickMonitoring(50)" title="Мониторинг медленных тиков">⏱️ Tick Monitor</button>
+                        </div>
+                        
+                        <!-- Индикатор обновления -->
+                        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.8em; color: #999; text-align: center;">
+                            <span id="performanceLastUpdate">📊 Последнее обновление: загрузка...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Большая консоль сервера -->
+            <div class="console-section">
+                <div class="admin-card console-card">
+                    <div class="card-header">
+                        <div class="card-icon">⌨️</div>
+                        <h3 class="card-title">Консоль сервера</h3>
+                        <div class="connection-status" id="consoleStatus">
+                            <span class="status-indicator"></span>
+                            <span>Real-time Console</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="console-output-large" id="consoleOutput">
+                            [Система] Подключение к консоли сервера...<br>
+                        </div>
+                        <div class="console-input-section">
+                            <input type="text" class="command-input-large" placeholder="Введите команду сервера..." onkeypress="handleCommand(event)" id="commandInput">
+                            <div class="console-buttons">
+                                <button class="console-btn execute-btn" onclick="executeConsoleCommand()">
+                                    <span class="btn-icon">▶️</span>
+                                    <span>Выполнить</span>
+                                </button>
+                                <button class="console-btn clear-btn" onclick="clearConsole()">
+                                    <span class="btn-icon">🧹</span>
+                                    <span>Очистить</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </div> <!-- Закрываем adminPanel -->
+
+    <script src="admin-connected.js"></script>
+</body>
+</html>

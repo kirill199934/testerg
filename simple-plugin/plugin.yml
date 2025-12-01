@@ -1,0 +1,17 @@
+name: TravHouseAPI
+version: 1.0
+main: TravHouseAPIPlugin
+api-version: 1.19
+author: TravHouse
+description: Simple API plugin for TravHouse admin panel
+
+commands:
+  thapi:
+    description: TravHouse API commands
+    usage: /thapi [status|reload]
+    permission: travhouse.admin
+
+permissions:
+  travhouse.admin:
+    description: Access to TravHouse API commands
+    default: op

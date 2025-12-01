@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <pattern id="grass" patternUnits="userSpaceOnUse" width="40" height="40">
+      <rect width="40" height="40" fill="#228B22"/>
+      <rect width="20" height="20" fill="#32CD32" x="0" y="0"/>
+      <rect width="20" height="20" fill="#32CD32" x="20" y="20"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="120" fill="#87CEEB"/>
+  <rect width="400" height="80" y="120" fill="url(#grass)"/>
+  <rect width="120" height="100" x="140" y="100" fill="#8B4513"/>
+  <rect width="140" height="20" x="130" y="80" fill="#654321"/>
+  <polygon points="130,80 200,40 270,80" fill="#DC143C"/>
+  <rect width="30" height="50" x="160" y="150" fill="#4B0082"/>
+  <rect width="20" height="20" x="220" y="130" fill="#87CEEB"/>
+  <text x="200" y="350" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="24" font-weight="bold">Постройка 1</text>
+</svg>

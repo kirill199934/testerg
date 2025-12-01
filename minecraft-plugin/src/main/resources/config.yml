@@ -1,0 +1,40 @@
+# TravHouse API Plugin Configuration
+
+api:
+  # Порт для HTTP API сервера
+  port: 8080
+  
+  # Включить ли API при запуске
+  enabled: true
+  
+  # Настройки безопасности
+  security:
+    # Разрешить доступ только с localhost
+    localhost_only: false
+    
+    # API ключ (оставьте пустым для отключения)
+    api_key: ""
+    
+  # Настройки производительности
+  performance:
+    # Количество потоков для HTTP сервера
+    thread_pool_size: 4
+    
+    # Интервал обновления TPS (в тиках)
+    tps_update_interval: 20
+
+# Логирование
+logging:
+  # Логировать запросы к API
+  log_requests: true
+  
+  # Уровень логирования (INFO, WARNING, SEVERE)
+  level: INFO
+
+# Сообщения плагина
+messages:
+  prefix: "&b[TravHouse API]&r"
+  no_permission: "&cУ вас нет прав для использования этой команды!"
+  config_reloaded: "&aКонфигурация успешно перезагружена!"
+  server_started: "&aHTTP сервер запущен на порту {port}"
+  server_stopped: "&cHTTP сервер остановлен"

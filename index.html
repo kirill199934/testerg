@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravHouse - Minecraft Server</title>
+    
+    <!-- Permissions Policy для устранения предупреждений -->
+    <meta http-equiv="Permissions-Policy" content="fullscreen=(), clipboard-read=(), clipboard-write=()">
+    
+    <!-- Дополнительные мета-теги безопасности -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- Подключение шрифтов -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="themes.css">
+</head>
+<body>
+    <!-- Фон -->
+    <div class="minecraft-bg"></div>
+    
+    <!-- Анимированные пути -->
+    <div class="background-paths" id="backgroundPaths"></div>
+    
+    <!-- Плавающие частицы -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Экран загрузки -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="curtain-left"></div>
+        <div class="curtain-right"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Навигация -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-text">TravHouse</span>
+        </div>
+        <nav class="nav-menu">
+            <!-- Ссылка на карту сервера -->
+            <a href="http://mc.travhouse.fun:8100" class="nav-link" target="_blank">🗺️ Карта</a>
+            <button id="openNewsModal" class="nav-link news-button">ℹ️ О хаусе</button>
+            <button id="themeToggle" class="nav-link theme-button">🎨 Дизайн</button>
+            <button id="openAdminPanel" class="nav-link admin-button">🔧 Админ-панель</button>
+        </nav>
+    </header>
+
+    <!-- Основной контент -->
+    <main id="mainContent" style="opacity: 0; transition: opacity 1s ease;">
+        <!-- Заголовок -->
+        <section class="main-header">
+            <h1 class="server-title typewriter" id="typewriter-title" data-text="TRAVHOUSE"></h1>
+            <p class="welcome-text slide-left pulse-text">
+                Добро пожаловать дорогой друг<br>
+                к нам в хаус по майнкрафт
+            </p>
+            <p class="description-text slide-right breathing cyber-text">
+                Прокрутите вниз, чтобы увидеть анкету для вступления в наш элитный сервер
+            </p>
+        </section>
+
+        <!-- Галерея построек -->
+        <section class="builds-section scale-in">
+            <h2 class="section-title neon-glow">🏗️ Наши Постройки</h2>
+            <div class="linear-gallery">
+                <div class="build-card fade-in" data-delay="0.1s">
+                    <div class="build-image-container">
+                        <img src="images/builds/build1.jpg" alt="Постройка 1" class="build-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="build-placeholder" style="display:none;">Постройка 1</div>
+                        <div class="build-overlay">
+                            <div class="build-info">
+                                <h3>Эпичный Замок</h3>
+                                <p>Величественная крепость с башнями</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="build-card fade-in" data-delay="0.2s">
+                    <div class="build-image-container">
+                        <img src="images/builds/build2.jpg" alt="Постройка 2" class="build-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="build-placeholder" style="display:none;">Постройка 2</div>
+                        <div class="build-overlay">
+                            <div class="build-info">
+                                <h3>Современный Город</h3>
+                                <p>Футуристические небоскребы</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="build-card fade-in" data-delay="0.3s">
+                    <div class="build-image-container">
+                        <img src="images/builds/build3.jpg" alt="Постройка 3" class="build-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="build-placeholder" style="display:none;">Постройка 3</div>
+                        <div class="build-overlay">
+                            <div class="build-info">
+                                <h3>Тропическая База</h3>
+                                <p>Уютный дом на острове</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="build-card fade-in" data-delay="0.4s">
+                    <div class="build-image-container">
+                        <img src="images/builds/build4.jpg" alt="Постройка 4" class="build-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="build-placeholder" style="display:none;">Постройка 4</div>
+                        <div class="build-overlay">
+                            <div class="build-info">
+                                <h3>Мегаферма</h3>
+                                <p>Автоматизированное хозяйство</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="build-card fade-in" data-delay="0.5s">
+                    <div class="build-image-container">
+                        <img src="images/builds/build5.jpg" alt="Постройка 5" class="build-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="build-placeholder" style="display:none;">Постройка 5</div>
+                        <div class="build-overlay">
+                            <div class="build-info">
+                                <h3>Подводный Дом</h3>
+                                <p>Стеклянная резиденция под водой</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="build-card fade-in" data-delay="0.6s">
+                    <div class="build-image-container">
+                        <img src="images/builds/build6.jpg" alt="Постройка 6" class="build-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="build-placeholder" style="display:none;">Постройка 6</div>
+                        <div class="build-overlay">
+                            <div class="build-info">
+                                <h3>Космическая Станция</h3>
+                                <p>База в облаках</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Секция особенностей сервера -->
+        <section class="features-section fade-in">
+            <h2 class="section-title pulse-text">⭐ Почему выбирают TravHouse?</h2>
+            <div class="features-grid">
+                <div class="feature-card scale-hover" data-delay="0.1s">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">Защита построек</h3>
+                    <p class="feature-description">Ваши постройки под надежной защитой от гриферов</p>
+                </div>
+                <div class="feature-card scale-hover" data-delay="0.2s">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Дружное сообщество</h3>
+                    <p class="feature-description">Активные игроки всегда готовы помочь новичкам</p>
+                </div>
+                <div class="feature-card scale-hover" data-delay="0.3s">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Регулярные обновления</h3>
+                    <p class="feature-description">Новый контент и улучшения каждую неделю</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секция статистики -->
+        <section class="stats-section scale-in">
+            <h2 class="section-title neon-glow">📊 Статистика Сервера</h2>
+            <div class="stats-grid">
+                <div class="stat-card breathing">
+                    <div class="stat-number">0+</div>
+                    <div class="stat-label">Активных игроков</div>
+                </div>
+                <div class="stat-card breathing" style="animation-delay: 0.5s;">
+                    <div class="stat-number">0+</div>
+                    <div class="stat-label">Построек создано</div>
+                </div>
+                <div class="stat-card breathing" style="animation-delay: 1s;">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Работа сервера</div>
+                </div>
+                <div class="stat-card breathing" style="animation-delay: 1.5s;">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Время работы</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Контактная секция -->
+        <section class="contact-section fade-in">
+            <div class="form-container scale-in">
+                <form id="surveyForm">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Имя (псевдоним):</label>
+                        <input type="text" id="name" class="form-input" maxlength="50" required>
+                        <div class="error-message" id="nameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nickname" class="form-label">Никнейм:</label>
+                        <input type="text" id="nickname" class="form-input" maxlength="30" required>
+                        <div class="error-message" id="nicknameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age" class="form-label">Возраст:</label>
+                        <input type="number" id="age" class="form-input" min="10" max="18" required>
+                        <div class="error-message" id="ageError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telegram" class="form-label">Ваш Telegram:</label>
+                        <input type="text" id="telegram" class="form-input" placeholder="@username" required>
+                        <div class="error-message" id="telegramError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone" class="form-label">Часовой пояс и страна:</label>
+                        <input type="text" id="timezone" class="form-input" 
+                               placeholder="Укажите страну и часовой пояс относительно Москвы" required>
+                        <div class="error-message" id="timezoneError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="platform" class="form-label">Платформа:</label>
+                        <select id="platform" class="form-select" required>
+                            <option value="">Выберите платформу</option>
+                            <option value="Телефон">Телефон</option>
+                            <option value="Компьютер">Компьютер</option>
+                        </select>
+                        <div class="error-message" id="platformError"></div>
+                    </div>
+
+                    <button type="submit" id="submitButton" class="send-button" disabled>Send Message</button>
+                    <div id="successMessage" class="success-message">Анкета отправлена!</div>
+                </form>
+            </div>
+
+            <div class="response-info">
+                <p>Заполняй её и присоединяйся к нам дорогой друг!</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="social-links">
+            <!-- ⚠️ МЕСТО ДЛЯ ССЫЛКИ НА TELEGRAM: замените href="#" на вашу ссылку -->
+            <a href="https://t.me/travhouseoffic" class="social-link" target="_blank">
+                <span>📱</span>
+                <span>Telegram</span>
+            </a>
+            <!-- TikTok официальная ссылка -->
+            <a href="http://tiktok.com/@trav1house" class="social-link" target="_blank">
+                <span>🎵</span>
+                <span>TikTok</span>
+            </a>
+        </div>
+        <p class="footer-text">© 2025 TravHouse Server. All rights reserved.</p>
+        <p class="footer-text">Server version: Bedrock(1.21.90-1.21.124) JAVA(1.21.9)</p>
+    </footer>
+
+    <!-- Модальное окно новостей -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content news-modal">
+            <span id="closeNewsModal" class="close">&times;</span>
+            <h2 class="modal-title">📰 Новости TravHouse</h2>
+            
+            <div class="news-container">
+                <div class="news-item">
+                    <div class="news-title">🚧 В разработке</div>
+                    <div class="news-content">
+                        Данный раздел находится в активной разработке. Здесь скоро появится подробная информация о сервере, правилах, новостях и многом другом!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Админ-панель модальное окно -->
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h2>🔧 Админ-панель TravHouse</h2>
+                <span class="admin-close">&times;</span>
+            </div>
+            <div class="admin-modal-body">
+                <iframe id="adminFrame" src="" frameborder="0" 
+                        allow="clipboard-read; clipboard-write"
+                        sandbox="allow-scripts allow-forms allow-popups allow-modals allow-downloads"
+                        referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Селектор тем -->
+    <div id="themeSelector" class="theme-selector">
+        <div class="theme-menu">
+            <button class="theme-close" onclick="closeThemeSelector()">&times;</button>
+            <h3>🎨 Выберите дизайн</h3>
+            <div class="theme-grid">
+                <div class="theme-option active" data-theme="default">
+                    <div class="theme-preview default"></div>
+                    <h4>🌌 Киберпанк</h4>
+                    <p>Классический дизайн</p>
+                </div>
+                <div class="theme-option" data-theme="neon-purple">
+                    <div class="theme-preview neon-purple"></div>
+                    <h4>💜 Неон Пурпур</h4>
+                    <p>Фиолетовое свечение</p>
+                </div>
+                <div class="theme-option" data-theme="matrix">
+                    <div class="theme-preview matrix"></div>
+                    <h4>💚 Матрица</h4>
+                    <p>Зеленый хакерский стиль</p>
+                </div>
+                <div class="theme-option" data-theme="ocean">
+                    <div class="theme-preview ocean"></div>
+                    <h4>🌊 Океан</h4>
+                    <p>Голубые глубины</p>
+                </div>
+                <div class="theme-option" data-theme="sunset">
+                    <div class="theme-preview sunset"></div>
+                    <h4>🌅 Закат</h4>
+                    <p>Оранжевое тепло</p>
+                </div>
+                <div class="theme-option" data-theme="retro-pink">
+                    <div class="theme-preview retro-pink"></div>
+                    <h4>💖 Ретро Пинк</h4>
+                    <p>Розовая волна</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение JavaScript -->
+    <script>
+        // Дополнительная защита от ошибок расширений
+        window.addEventListener('DOMContentLoaded', () => {
+            // Подавляем warnings о permissions policy
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('Permissions Policy violation') ||
+                    message.includes('fullscreen is not allowed') ||
+                    message.includes('clipboard-read is not allowed') ||
+                    message.includes('clipboard-write is not allowed')) {
+                    return;
+                }
+                originalWarn.apply(console, args);
+            };
+        });
+    </script>
+    <script src="config.js" onerror="console.log('⚠️ config.js загружен с предупреждениями или не найден')"></script>
+    <script src="script.js" onerror="console.error('❌ Критическая ошибка загрузки script.js')"></script>
+    <script src="themes.js" onerror="console.log('⚠️ themes.js загружен с предупреждениями')"></script>
+    <script src="typewriter-enhanced.js" onerror="console.log('⚠️ typewriter-enhanced.js загружен с предупреждениями')"></script>
+</body>
+</html>
